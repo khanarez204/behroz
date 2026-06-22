@@ -1,7 +1,10 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Behroz Group | Seafood, Dairy & Agri-Machinery Excellence</title>
     <meta name="description" content="Official website of Behroz Group — Behroz Seafood & Dairy Farm and Faizan Hardware & Agri Machinery. Leading providers of premium agriculture and food solutions in Khyber Pakhtunkhwa." />
 
@@ -87,9 +90,18 @@
         }
         html {
             scroll-behavior: smooth;
+            overflow-x: hidden;
         }
         body {
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        img, video, iframe {
+            max-width: 100%;
+        }
+        button, a {
+            -webkit-tap-highlight-color: transparent;
         }
         :focus-visible {
             outline: 3px solid #f59e0b;
@@ -221,11 +233,9 @@
             overflow: hidden;
             cursor: pointer;
         }
-        .slide-bar-fill {
-            display: block;
-            height: 100%;
-            width: 0%;
+        .hero-dot.active {
             background: #fff;
+            transform: scale(1.15);
         }
 
         .btn-primary {
@@ -318,6 +328,23 @@
 
         #admin-view {
             display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
+        }
+        body.admin-mode {
+            overflow: hidden;
+        }
+        body.admin-mode #navbar,
+        body.admin-mode footer,
+        body.admin-mode #chatbot-container,
+        body.admin-mode #admin-trigger-area,
+        body.admin-mode #scroll-progress,
+        body.admin-mode #mobile-menu-overlay {
+            display: none !important;
         }
         .admin-sidebar-link.active {
             background: rgba(13, 148, 136, 0.15);
@@ -515,7 +542,177 @@
             animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Admin sidebar responsive fix */
+        /* ---------- Mobile & Touch ---------- */
+        #mobile-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #mobile-menu {
+            z-index: 1001;
+            max-height: calc(100dvh - 4rem);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            transition: background 0.2s;
+        }
+        #mobile-menu a:active {
+            background: rgba(13, 148, 136, 0.1);
+        }
+        .filter-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            flex-wrap: nowrap !important;
+            justify-content: flex-start !important;
+            padding-bottom: 0.25rem;
+            max-width: 100%;
+        }
+        .filter-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .filter-scroll .product-tab {
+            flex-shrink: 0;
+        }
+        #order-modal {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+        #testimonial-slider {
+            -webkit-overflow-scrolling: touch;
+            scroll-padding: 1rem;
+        }
+        @media (hover: none) {
+            .card-hover:hover {
+                transform: none;
+            }
+        }
+        @media (max-width: 767px) {
+            input, select, textarea {
+                font-size: 16px;
+            }
+            .page-banner {
+                min-height: 36vh;
+            }
+            .page-banner h1 {
+                font-size: 2.25rem;
+                line-height: 1.15;
+            }
+            .btn-primary,
+            .btn-outline-light {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            .hero-cta-group .btn-primary,
+            .hero-cta-group .btn-outline-light {
+                width: 100%;
+                justify-content: center;
+            }
+            #chatbot-container {
+                bottom: max(1rem, env(safe-area-inset-bottom));
+                right: max(0.75rem, env(safe-area-inset-right));
+            }
+            #chatbot-toggle {
+                width: 3.25rem;
+                height: 3.25rem;
+                font-size: 1.25rem;
+            }
+            #chat-window {
+                width: calc(100vw - 1.5rem) !important;
+                max-width: 400px;
+                right: 0;
+                height: min(70dvh, 500px);
+                bottom: 4.25rem;
+                border-radius: 1.5rem;
+            }
+            #back-to-top {
+                bottom: max(5.25rem, calc(env(safe-area-inset-bottom) + 4.25rem));
+                left: max(0.75rem, env(safe-area-inset-left));
+                width: 2.75rem;
+                height: 2.75rem;
+            }
+            #admin-trigger-area {
+                bottom: max(5.25rem, calc(env(safe-area-inset-bottom) + 4.25rem));
+                left: max(3.5rem, calc(env(safe-area-inset-left) + 2.75rem));
+                width: 2.75rem;
+                height: 2.75rem;
+            }
+            #lightbox button.absolute.top-6 {
+                top: 1rem;
+                right: 1rem;
+            }
+            #lightbox .absolute.left-4,
+            #lightbox .absolute.right-4 {
+                font-size: 1.5rem;
+            }
+            .counter-section .text-6xl {
+                font-size: 2.5rem;
+                line-height: 1;
+            }
+            .about-years-badge {
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                transform: none !important;
+                margin: 1.25rem auto 0;
+                width: fit-content;
+            }
+        }
+        @media (max-width: 1023px) {
+            #admin-view {
+                flex-direction: column;
+            }
+            #admin-sidebar {
+                width: 100% !important;
+                flex-shrink: 0;
+            }
+            #admin-sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                padding: 0.75rem !important;
+                margin-top: 0 !important;
+            }
+            #admin-sidebar .admin-sidebar-link {
+                flex: 1 1 calc(50% - 0.25rem);
+                min-width: calc(50% - 0.25rem);
+                border-left: none !important;
+                padding: 0.75rem !important;
+                font-size: 0.75rem;
+                transform: none !important;
+            }
+            #admin-sidebar .admin-sidebar-link:hover {
+                transform: none;
+            }
+            #admin-sidebar > .p-4.border-t {
+                display: none;
+            }
+            #admin-view .flex-1.flex.flex-col {
+                flex: 1;
+                min-height: 0;
+                height: auto;
+            }
+            .admin-table-wrap table {
+                font-size: 0.8rem;
+            }
+            .admin-table-wrap th,
+            .admin-table-wrap td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
         @media (max-width: 1024px) {
             .admin-sidebar-link {
                 padding: 12px 16px;
@@ -547,13 +744,15 @@
 
     <div id="scroll-progress"></div>
 
+    <div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+
     <!-- Main Navigation -->
     <nav class="fixed w-full z-[1000] transition-all duration-300 glass" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <a href="#" onclick="goToPage('home');return false;" class="flex-shrink-0 flex items-center gap-3" id="logo-trigger">
-    <img src="logo.png" alt="My Logo" class="h-80 w-auto">
-</a>
+            <div class="flex justify-between h-16 md:h-20 items-center">
+                <a href="#" onclick="goToPage('home');return false;" class="flex-shrink-0 flex items-center gap-2 min-w-0" id="logo-trigger">
+                    <img src="logo.png" alt="Behroz Group" class="h-70 sm:h-80 md:h-80 w-auto max-w-[250px] sm:max-w-[300px] object-contain">
+                </a>
 
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#" data-page="home" onclick="goToPage('home');return false;" class="nav-link nav-active relative font-semibold text-sm uppercase tracking-wider">Home</a>
@@ -568,23 +767,23 @@
                     </button>
                 </div>
 
-                <div class="md:hidden flex items-center gap-4">
-                    <button id="theme-toggle-mobile" class="p-2 rounded-full">
+                <div class="md:hidden flex items-center gap-2">
+                    <button id="theme-toggle-mobile" type="button" aria-label="Toggle theme" class="p-2.5 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center">
                         <i class="fas fa-moon dark:hidden"></i>
                         <i class="fas fa-sun hidden dark:block"></i>
                     </button>
-                    <button id="mobile-menu-btn" class="text-2xl"><i class="fas fa-bars"></i></button>
+                    <button id="mobile-menu-btn" type="button" aria-label="Open menu" aria-expanded="false" class="text-2xl min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fas fa-bars"></i></button>
                 </div>
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden glass absolute w-full px-4 py-6 space-y-4 shadow-2xl">
-            <a href="#" onclick="goToPage('home');return false;" class="block font-bold text-lg">Home</a>
-            <a href="#" onclick="goToPage('about');return false;" class="block font-bold text-lg">About</a>
-            <a href="#" onclick="goToPage('services');return false;" class="block font-bold text-lg">Services</a>
-            <a href="#" onclick="goToPage('products');return false;" class="block font-bold text-lg">Products</a>
-            <a href="#" onclick="goToPage('gallery');return false;" class="block font-bold text-lg">Gallery</a>
-            <a href="#" onclick="goToContact();return false;" class="block font-bold text-lg">Contact</a>
+        <div id="mobile-menu" class="hidden md:hidden glass absolute w-full left-0 px-4 py-4 space-y-1 shadow-2xl border-t border-slate-200/50 dark:border-slate-700/50">
+            <a href="#" onclick="goToPage('home');return false;" class="font-bold text-base">Home</a>
+            <a href="#" onclick="goToPage('about');return false;" class="font-bold text-base">About</a>
+            <a href="#" onclick="goToPage('services');return false;" class="font-bold text-base">Services</a>
+            <a href="#" onclick="goToPage('products');return false;" class="font-bold text-base">Products</a>
+            <a href="#" onclick="goToPage('gallery');return false;" class="font-bold text-base">Gallery</a>
+            <a href="#" onclick="goToContact();return false;" class="font-bold text-base">Contact</a>
         </div>
     </nav>
 
@@ -602,7 +801,7 @@
         <div id="page-home" class="page">
 
             <!-- Hero Section: cinematic crossfade slider -->
-            <section id="hero" class="relative h-screen min-h-[680px] flex items-end pb-24 md:items-center md:pb-0 overflow-hidden bg-slate-950">
+            <section id="hero" class="relative h-[100svh] min-h-[560px] sm:min-h-[680px] flex items-end pb-20 sm:pb-24 md:items-center md:pb-0 overflow-hidden bg-slate-950">
 
                 <!-- Slides -->
                 <div class="hero-slide opacity-100" data-slide="0">
@@ -628,13 +827,13 @@
                         <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary/20 border border-secondary/40 text-secondary rounded-full font-bold text-xs sm:text-sm mb-6 tracking-widest" data-aos="fade-right">
                             <i class="fas fa-leaf"></i> EXCELLENCE IN EVERY INDUSTRY
                         </span>
-                        <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-black text-white leading-[1.08] mb-6 [text-shadow:0_4px_30px_rgba(0,0,0,.45)]" data-aos="fade-up" data-aos-delay="100">
+                        <h1 class="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] mb-4 sm:mb-6 [text-shadow:0_4px_30px_rgba(0,0,0,.45)]" data-aos="fade-up" data-aos-delay="100">
                             Premium Quality <span class="text-secondary">Products</span> for a Better Tomorrow
                         </h1>
                         <p class="text-lg sm:text-xl text-slate-300 mb-10 leading-relaxed max-w-xl" data-aos="fade-up" data-aos-delay="200">
                             Leading the way in Seafood, Dairy Farming, Hardware, and Agricultural Machinery. We bring innovation and sustainability to the heart of Pakistan's economy.
                         </p>
-                        <div class="flex flex-wrap gap-4 mb-16" data-aos="fade-up" data-aos-delay="300">
+                        <div class="hero-cta-group flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-10 sm:mb-16" data-aos="fade-up" data-aos-delay="300">
                             <a href="#divisions" class="btn-primary">
                                 Explore Divisions <i class="fas fa-arrow-right"></i>
                             </a>
@@ -643,9 +842,15 @@
                             </a>
                         </div>
 
-                        <!-- Slide indicators -->
-                        <div class="hidden sm:flex items-center gap-6 max-w-xl" data-aos="fade-up" data-aos-delay="400">
-                            <div class="flex-1 grid grid-cols-4 gap-2">
+                        <!-- Slide indicators (mobile dots + desktop bars) -->
+                        <div class="flex items-center gap-4 max-w-xl" data-aos="fade-up" data-aos-delay="400">
+                            <div class="flex sm:hidden gap-2">
+                                <button type="button" class="w-2.5 h-2.5 rounded-full bg-white/30 hero-dot active" data-hero-dot="0" onclick="setHeroSlide(0)" aria-label="Slide 1"></button>
+                                <button type="button" class="w-2.5 h-2.5 rounded-full bg-white/30 hero-dot" data-hero-dot="1" onclick="setHeroSlide(1)" aria-label="Slide 2"></button>
+                                <button type="button" class="w-2.5 h-2.5 rounded-full bg-white/30 hero-dot" data-hero-dot="2" onclick="setHeroSlide(2)" aria-label="Slide 3"></button>
+                                <button type="button" class="w-2.5 h-2.5 rounded-full bg-white/30 hero-dot" data-hero-dot="3" onclick="setHeroSlide(3)" aria-label="Slide 4"></button>
+                            </div>
+                            <div class="hidden sm:flex flex-1 grid grid-cols-4 gap-2">
                                 <div class="slide-bar" onclick="setHeroSlide(0)"><span class="slide-bar-fill" data-bar="0"></span></div>
                                 <div class="slide-bar" onclick="setHeroSlide(1)"><span class="slide-bar-fill" data-bar="1"></span></div>
                                 <div class="slide-bar" onclick="setHeroSlide(2)"><span class="slide-bar-fill" data-bar="2"></span></div>
@@ -686,17 +891,17 @@
             </section>
 
             <!-- About Teaser Section -->
-            <section id="about-preview" class="py-24 bg-white dark:bg-slate-900 overflow-hidden">
-                <div class="max-w-7xl mx-auto px-4">
-                    <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <section id="about-preview" class="py-16 sm:py-24 bg-white dark:bg-slate-900 overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                    <div class="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
                         <div class="relative" data-aos="fade-right">
-                            <div class="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl">
+                            <div class="relative z-10 rounded-2xl sm:rounded-[3rem] overflow-hidden shadow-2xl">
                                 <img src="image4.png" alt="Behroz Group corporate facility" class="w-full">
                             </div>
                             <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-secondary/10 rounded-full blur-3xl z-0"></div>
                             <div class="absolute -top-10 -left-10 w-48 h-48 bg-accent/10 rounded-full blur-3xl z-0"></div>
-                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl flex items-center gap-4 border border-slate-100 dark:border-slate-700">
-                                <div class="text-4xl font-black text-secondary">25+</div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 about-years-badge bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-2xl shadow-2xl flex items-center gap-3 sm:gap-4 border border-slate-100 dark:border-slate-700">
+                                <div class="text-3xl sm:text-4xl font-black text-secondary">25+</div>
                                 <div class="text-sm font-bold uppercase tracking-widest leading-tight">Years of<br>Industry Expertise</div>
                             </div>
                         </div>
@@ -828,7 +1033,7 @@
                             <h2 class="text-secondary font-bold text-lg mb-4 tracking-[0.2em] uppercase">Premium Inventory</h2>
                             <h3 class="font-display text-4xl md:text-5xl font-black">Featured Products</h3>
                         </div>
-                        <div class="flex flex-wrap gap-3" id="gallery-filters">
+                        <div class="flex flex-wrap gap-3 filter-scroll w-full md:w-auto" id="gallery-filters">
                             <button class="product-tab active px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterGallery('all')">All</button>
                             <button class="product-tab px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterGallery('seafood')">Seafood</button>
                             <button class="product-tab px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterGallery('dairy')">Dairy</button>
@@ -850,13 +1055,13 @@
             </section>
 
             <!-- Why Choose Us -->
-            <section class="py-24 bg-primary text-white relative overflow-hidden">
+            <section class="py-16 sm:py-24 bg-primary text-white relative overflow-hidden counter-section">
                 <div class="absolute inset-0 opacity-10">
                     <div class="absolute w-[500px] h-[500px] bg-secondary rounded-full blur-[120px] -top-64 -left-64"></div>
                 </div>
 
                 <div class="max-w-7xl mx-auto px-4 relative z-10">
-                    <div class="grid lg:grid-cols-4 gap-12 text-center">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 text-center">
                         <div data-aos="zoom-in">
                             <div class="text-6xl font-black text-secondary mb-4 counter" data-target="25">0</div>
                             <h5 class="text-xl font-bold mb-2">Years Experience</h5>
@@ -1094,25 +1299,17 @@
                         <h3 class="font-display text-4xl md:text-5xl font-black">The People Behind Behroz Group</h3>
                     </div>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div class="text-center" data-aos="fade-up">
-                            <img src="https://i.pravatar.cc/200?u=behroz" alt="Behroz Yousaf" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-secondary object-cover">
-                            <h5 class="font-bold text-lg">Behroz Yousaf</h5>
-                            <p class="text-xs font-bold text-secondary tracking-widest uppercase">Chief Executive Officer</p>
-                        </div>
-                        <div class="text-center" data-aos="fade-up" data-aos-delay="100">
-                            <img src="https://i.pravatar.cc/200?u=imran-sethi" alt="Imran Sethi" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
-                            <h5 class="font-bold text-lg">Imran Sethi</h5>
-                            <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Head of Operations</p>
-                        </div>
+                        
+                        
                         <div class="text-center" data-aos="fade-up" data-aos-delay="200">
-                            <img src="https://i.pravatar.cc/200?u=ayesha-noor" alt="Ayesha Noor" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
-                            <h5 class="font-bold text-lg">Ayesha Noor</h5>
-                            <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Quality Assurance Lead</p>
+                            <img src="" alt="Ayesha Noor" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
+                            <h5 class="font-bold text-lg">faizan</h5>
+                            <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">managing Director</p>
                         </div>
                         <div class="text-center" data-aos="fade-up" data-aos-delay="300">
-                            <img src="https://i.pravatar.cc/200?u=tariq-mehmood" alt="Tariq Mehmood" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
-                            <h5 class="font-bold text-lg">Tariq Mehmood</h5>
-                            <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Director, Agri Machinery</p>
+                            <img src="behroz.jpeg" alt="Tariq Mehmood" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
+                            <h5 class="font-bold text-lg">behroz yousaf</h5>
+                            <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">CEO</p>
                         </div>
                     </div>
                 </div>
@@ -1189,7 +1386,7 @@
 
                 <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center" data-aos="fade-up">
                     <div class="rounded-[3rem] overflow-hidden shadow-2xl lg:order-1">
-                        <img src="image3" alt="Agricultural machinery" class="w-full h-full object-cover">
+                        <img src="image3.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1594913785162-e6785b48ddd9?q=80&w=1200'" alt="Agricultural machinery" class="w-full h-full object-cover min-h-[240px]">
                     </div>
                     <div>
                         <div class="w-16 h-16 bg-agri rounded-2xl flex items-center justify-center text-white text-3xl mb-6 shadow-lg shadow-agri/30"><i class="fas fa-tractor"></i></div>
@@ -1291,7 +1488,7 @@
             <!-- Product Grid - Full Catalog -->
             <section class="py-20 bg-white dark:bg-slate-900">
                 <div class="max-w-7xl mx-auto px-4">
-                    <div class="flex flex-wrap gap-3 justify-center mb-12" id="products-page-filters">
+                    <div class="flex flex-wrap gap-3 justify-center mb-12 filter-scroll px-1" id="products-page-filters">
                         <button class="product-tab active px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterProductsPage('all')">All</button>
                         <button class="product-tab px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterProductsPage('seafood')">Seafood</button>
                         <button class="product-tab px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterProductsPage('dairy')">Dairy</button>
@@ -1323,7 +1520,7 @@
 
             <section class="py-20 bg-white dark:bg-slate-900">
                 <div class="max-w-7xl mx-auto px-4">
-                    <div class="flex flex-wrap gap-3 justify-center mb-12" id="gallery-page-filters">
+                    <div class="flex flex-wrap gap-3 justify-center mb-12 filter-scroll px-1" id="gallery-page-filters">
                         <button class="product-tab active px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterGalleryPage('all')">All</button>
                         <button class="product-tab px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterGalleryPage('seafood')">Seafood</button>
                         <button class="product-tab px-6 py-2 rounded-full font-bold border border-slate-200 dark:border-slate-700 transition-all" onclick="filterGalleryPage('dairy')">Dairy</button>
@@ -1343,9 +1540,9 @@
     </main>
 
     <!-- Shared Footer -->
-    <footer class="bg-primary text-white pt-20 pb-10">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+    <footer class="bg-primary text-white pt-12 sm:pt-20 pb-8 sm:pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-12 sm:mb-16">
                 <div>
                     <div class="flex items-center gap-3 mb-8">
                         <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white font-bold text-2xl">B</div>
@@ -1388,9 +1585,9 @@
                 <div>
                     <h5 class="text-xl font-bold mb-8">Newsletter</h5>
                     <p class="text-sm text-slate-400 mb-6">Subscribe to get latest updates on products and industry news.</p>
-                    <div class="flex gap-2">
-                        <input type="email" placeholder="Email Address" class="bg-slate-800 border-none rounded-xl px-4 py-3 flex-1 text-sm focus:ring-1 ring-secondary outline-none">
-                        <button class="bg-secondary text-white px-4 py-3 rounded-xl hover:bg-teal-700 transition-all"><i class="fas fa-paper-plane"></i></button>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="email" placeholder="Email Address" class="bg-slate-800 border-none rounded-xl px-4 py-3 flex-1 text-base sm:text-sm focus:ring-1 ring-secondary outline-none min-h-[44px]">
+                        <button type="button" aria-label="Subscribe" class="bg-secondary text-white px-4 py-3 rounded-xl hover:bg-teal-700 transition-all min-h-[44px] sm:min-w-[44px] flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -1404,8 +1601,8 @@
     <!-- ============================================================ -->
     <!-- ORDER MODAL (for product ordering) -->
     <!-- ============================================================ -->
-    <div id="order-modal" class="fixed inset-0 z-[5000] hidden items-center justify-center p-4" onclick="if(event.target===this) closeOrderModal()">
-        <div class="modal-content bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl p-8 md:p-10 relative max-h-[90vh] overflow-y-auto">
+    <div id="order-modal" class="fixed inset-0 z-[5000] hidden items-center justify-center p-3 sm:p-4" onclick="if(event.target===this) closeOrderModal()">
+        <div class="modal-content bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl sm:rounded-[2.5rem] shadow-2xl p-6 sm:p-8 md:p-10 relative max-h-[92dvh] overflow-y-auto">
             <button onclick="closeOrderModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl transition-colors">
                 <i class="fas fa-times"></i>
             </button>
@@ -1469,7 +1666,7 @@
     <!-- ============================================================ -->
     <div id="admin-view" class="min-h-screen bg-slate-100 dark:bg-slate-900 flex">
         <!-- Sidebar -->
-        <aside class="w-72 bg-primary text-white flex-shrink-0 flex flex-col lg:flex shadow-2xl relative z-10">
+        <aside id="admin-sidebar" class="w-72 lg:w-72 bg-primary text-white flex-shrink-0 flex flex-col shadow-2xl relative z-10">
             <div class="p-6 border-b border-slate-800 flex items-center gap-3">
                 <div class="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-secondary/30">B</div>
                 <div>
@@ -1508,8 +1705,11 @@
                     <span class="text-[10px] font-bold px-3 py-1 bg-secondary/10 text-secondary rounded-full">v2.0</span>
                 </div>
                 <div class="flex items-center gap-5">
-                    <span class="text-sm font-bold opacity-60 hidden sm:inline">Welcome, <span class="text-secondary">Behroz Yousaf</span></span>
-                    <button onclick="logout()" class="lg:hidden text-red-400 hover:text-red-600 transition-colors text-xl"><i class="fas fa-power-off"></i></button>
+                    <button onclick="logout()" class="hidden sm:inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-secondary transition-colors">
+                        <i class="fas fa-arrow-left"></i> Back to site
+                    </button>
+                    <span class="text-sm font-bold opacity-60 hidden md:inline">Welcome, <span class="text-secondary">Behroz Yousaf</span></span>
+                    <button onclick="logout()" class="lg:hidden text-red-400 hover:text-red-600 transition-colors text-xl" aria-label="Logout"><i class="fas fa-power-off"></i></button>
                 </div>
             </header>
 
@@ -1595,12 +1795,12 @@
     </div>
 
     <!-- AI Chatbot -->
-    <div id="chatbot-container" class="fixed bottom-10 right-10 z-[2000]">
+    <div id="chatbot-container" class="fixed bottom-6 right-4 sm:bottom-10 sm:right-10 z-[2000]">
         <button id="chatbot-toggle" class="w-16 h-16 bg-secondary text-white rounded-full shadow-2xl flex items-center justify-center text-2xl animate-float transition-all hover:scale-110 active:scale-95">
             <i class="fas fa-comment-dots"></i>
         </button>
 
-        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-[350px] md:w-[400px] h-[550px] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border dark:border-slate-800">
+        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-[calc(100vw-2rem)] sm:w-[350px] md:w-[400px] h-[min(70dvh,550px)] bg-white dark:bg-slate-900 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border dark:border-slate-800">
             <div class="bg-secondary p-6 text-white">
                 <div class="flex items-center gap-4">
                     <div class="relative">
@@ -1642,8 +1842,8 @@
     </div>
 
     <!-- Admin Login Modal -->
-    <div id="admin-login-modal" class="fixed inset-0 z-[3000] hidden flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-900 w-full max-w-md p-8 md:p-10 rounded-[2.5rem] shadow-2xl relative animate-fade-scale">
+    <div id="admin-login-modal" class="fixed inset-0 z-[3000] hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md p-6 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-2xl relative animate-fade-scale max-h-[92dvh] overflow-y-auto">
             <button onclick="toggleAdminLogin()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors text-xl"><i class="fas fa-times"></i></button>
             <div class="text-center mb-10">
                 <div class="w-24 h-24 bg-secondary/10 rounded-3xl flex items-center justify-center mx-auto mb-5 text-secondary text-4xl shadow-lg shadow-secondary/10">
@@ -1682,7 +1882,7 @@
     </div>
 
     <!-- Back to Top -->
-    <button id="back-to-top" class="fixed bottom-10 left-10 w-12 h-12 bg-white dark:bg-slate-800 text-secondary rounded-full shadow-2xl flex items-center justify-center z-[1500] opacity-0 translate-y-10 transition-all hover:scale-110 active:scale-90">
+    <button id="back-to-top" type="button" aria-label="Back to top" class="fixed bottom-6 left-4 sm:bottom-10 sm:left-10 w-11 h-11 sm:w-12 sm:h-12 bg-white dark:bg-slate-800 text-secondary rounded-full shadow-2xl flex items-center justify-center z-[1500] opacity-0 translate-y-10 transition-all hover:scale-110 active:scale-90">
         <i class="fas fa-chevron-up"></i>
     </button>
 
@@ -1849,6 +2049,24 @@
 
         function closeMobileMenu() {
             document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('mobile-menu-overlay').classList.remove('active');
+            document.getElementById('mobile-menu-btn').setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const btn = document.getElementById('mobile-menu-btn');
+            const isOpen = !menu.classList.contains('hidden');
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                menu.classList.remove('hidden');
+                overlay.classList.add('active');
+                btn.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         // ---------------- UI Helpers ----------------
@@ -1930,6 +2148,11 @@
             });
             document.getElementById('hero-slide-num').innerText = String(i + 1).padStart(2, '0');
             document.getElementById('hero-slide-label').innerText = heroLabels[i];
+
+            document.querySelectorAll('.hero-dot').forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === i);
+                dot.style.background = idx === i ? '#fff' : 'rgba(255,255,255,0.3)';
+            });
 
             document.querySelectorAll('.slide-bar-fill').forEach((bar, idx) => {
                 bar.style.transition = 'none';
@@ -2288,7 +2511,7 @@
             e.target.reset();
 
             // Refresh admin if open
-            if (document.getElementById('admin-view').style.display === 'flex') {
+            if (document.body.classList.contains('admin-mode')) {
                 refreshAdmin();
             }
         };
@@ -2303,13 +2526,21 @@
         // ---------------- Admin (FIXED) ----------------
         function toggleAdminLogin() { document.getElementById('admin-login-modal').classList.toggle('hidden'); }
 
+        function setAdminMode(active) {
+            document.body.classList.toggle('admin-mode', active);
+            document.getElementById('main-view').style.display = active ? 'none' : 'block';
+            document.getElementById('admin-view').style.display = active ? 'flex' : 'none';
+            if (active) {
+                closeMobileMenu();
+                document.getElementById('admin-login-modal').classList.add('hidden');
+            }
+        }
+
         function login() {
             const user = document.getElementById('admin-user').value;
             const pass = document.getElementById('admin-pass').value;
             if (user === 'admin' && pass === 'admin123') {
-                document.getElementById('main-view').style.display = 'none';
-                document.getElementById('admin-view').style.display = 'flex';
-                document.getElementById('admin-login-modal').classList.add('hidden');
+                setAdminMode(true);
                 showAdminSection('products');
                 refreshAdmin();
             } else {
@@ -2318,8 +2549,7 @@
         }
 
         function logout() {
-            document.getElementById('main-view').style.display = 'block';
-            document.getElementById('admin-view').style.display = 'none';
+            setAdminMode(false);
         }
 
         function showAdminSection(sec) {
@@ -2511,8 +2741,12 @@
 
         // ---------------- Misc ----------------
         document.getElementById('back-to-top').onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-        document.getElementById('mobile-menu-btn').onclick = () => document.getElementById('mobile-menu').classList.toggle(
-        'hidden');
+        document.getElementById('mobile-menu-btn').onclick = toggleMobileMenu;
+
+        // Close mobile menu on resize to desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) closeMobileMenu();
+        });
 
         // On login, ensure admin is refreshed after a short delay
         const origLogin = login;
