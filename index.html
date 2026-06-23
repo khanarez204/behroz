@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8" />
@@ -11,8 +12,17 @@
     <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+
+    <!-- Firebase SDK (modular via CDN) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"
+            }
+        }
     </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet" />
@@ -97,10 +107,13 @@
             overflow-x: hidden;
             max-width: 100%;
         }
-        img, video, iframe {
+        img,
+        video,
+        iframe {
             max-width: 100%;
         }
-        button, a {
+        button,
+        a {
             -webkit-tap-highlight-color: transparent;
         }
         :focus-visible {
@@ -448,7 +461,6 @@
             box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.15);
         }
 
-        /* Admin table action buttons */
         .admin-action-btn {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
@@ -476,12 +488,10 @@
             color: #ef4444;
         }
 
-        /* Empty state animation */
         .empty-state {
             animation: fadeScale 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Scrollable admin tables with fade */
         .admin-table-wrap {
             position: relative;
             overflow: hidden;
@@ -601,7 +611,9 @@
             }
         }
         @media (max-width: 767px) {
-            input, select, textarea {
+            input,
+            select,
+            textarea {
                 font-size: 16px;
             }
             .page-banner {
@@ -697,7 +709,7 @@
             #admin-sidebar .admin-sidebar-link:hover {
                 transform: none;
             }
-            #admin-sidebar > .p-4.border-t {
+            #admin-sidebar>.p-4.border-t {
                 display: none;
             }
             #admin-view .flex-1.flex.flex-col {
@@ -734,13 +746,7 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300">
 
-    <!-- Loading Animation -->
-    <div id="loader" class="loader-wrapper">
-        <div class="flex flex-col items-center">
-            <div class="w-16 h-16 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
-            <h2 class="mt-4 text-white font-bold tracking-widest text-xl">BEHROZ GROUP</h2>
-        </div>
-    </div>
+    <!-- Loading screen removed -->
 
     <div id="scroll-progress"></div>
 
@@ -1299,15 +1305,13 @@
                         <h3 class="font-display text-4xl md:text-5xl font-black">The People Behind Behroz Group</h3>
                     </div>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        
-                        
                         <div class="text-center" data-aos="fade-up" data-aos-delay="200">
-                            <img src="" alt="Ayesha Noor" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
+                            <img src="" alt="faizan" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
                             <h5 class="font-bold text-lg">faizan</h5>
-                            <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">managing Director</p>
+                            <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Managing Director</p>
                         </div>
                         <div class="text-center" data-aos="fade-up" data-aos-delay="300">
-                            <img src="behroz.jpeg" alt="Tariq Mehmood" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
+                            <img src="behroz.jpeg" alt="behroz yousaf" class="w-32 h-32 rounded-full mx-auto mb-5 ring-4 ring-slate-200 dark:ring-slate-700 object-cover">
                             <h5 class="font-bold text-lg">behroz yousaf</h5>
                             <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">CEO</p>
                         </div>
@@ -1889,13 +1893,52 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js">
     </script>
-    <script>
-        // ---------------- Supabase ----------------
-        const supabaseUrl = 'https://pbhtzeqelsfcycmglpbf.supabase.co';
-        const supabaseKey = 'sb_publishable_xSPTciX4Vsj4e7cGzq1OmQ_k6koU0Ku';
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // ---------------- Database ----------------
+    <script type="module">
+        // ================================================================
+        //  FIREBASE IMPORTS & INITIALIZATION
+        // ================================================================
+        import { initializeApp } from "firebase/app";
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            addDoc,
+            updateDoc,
+            deleteDoc,
+            doc,
+            setDoc,
+            getDoc,
+            query,
+            orderBy,
+            serverTimestamp
+        } from "firebase/firestore";
+
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkxmACLgR7smj5f1beD4yb-F60utmw3ZA",
+            authDomain: "behroz-873ce.firebaseapp.com",
+            projectId: "behroz-873ce",
+            storageBucket: "behroz-873ce.firebasestorage.app",
+            messagingSenderId: "1029764062114",
+            appId: "1:1029764062114:web:8a00b472659f33505a70fb"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Collection references
+        const productsCol = collection(db, 'products');
+        const leadsCol = collection(db, 'leads');
+        const ordersCol = collection(db, 'orders');
+        const testimonialsCol = collection(db, 'testimonials');
+        const faqsCol = collection(db, 'faqs');
+        const galleryCol = collection(db, 'gallery');
+
+        // ================================================================
+        //  LOCAL STORAGE FALLBACK
+        // ================================================================
         const INITIAL_DATA = {
             products: [
                 { id: 1, name: "Fresh King Prawns", category: "seafood", price: "Contact for Pricing",
@@ -1976,55 +2019,149 @@
         let DB = JSON.parse(localStorage.getItem('behroz_group_db'));
         if (!DB.gallery) { DB.gallery = INITIAL_DATA.gallery; }
         if (!DB.orders) { DB.orders = INITIAL_DATA.orders; }
+        if (!DB.testimonials) { DB.testimonials = INITIAL_DATA.testimonials; }
+        if (!DB.faqs) { DB.faqs = INITIAL_DATA.faqs; }
 
-        const saveDB = async () => {
+        const saveDB = () => {
             localStorage.setItem('behroz_group_db', JSON.stringify(DB));
         };
 
-        // ---------------- Init ----------------
-        document.addEventListener('DOMContentLoaded', () => {
-            AOS.init({ duration: 1000, once: true });
+        // ================================================================
+        //  FIREBASE SYNC HELPERS
+        // ================================================================
+        async function syncCollectionToFirebase(collectionRef, dataArray, idField = 'id') {
+            try {
+                const snap = await getDocs(collectionRef);
+                const existingIds = new Set();
+                snap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data[idField]) existingIds.add(String(data[idField]));
+                });
 
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-            }, 1200);
-
-            renderProductGrid();
-            renderProductsFullPage();
-            renderTestimonials();
-            renderFAQ();
-            renderGalleryPage();
-            initCounters();
-            setupChatbot();
-            updateScrollProgress();
-            initHeroSlider();
-
-            const initial = (location.hash || '').replace('#', '');
-            if (['about', 'services', 'products', 'gallery'].includes(initial)) {
-                goToPage(initial, false);
-            }
-
-            // --- Hidden admin triggers ---
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-                    e.preventDefault();
-                    toggleAdminLogin();
+                for (const item of dataArray) {
+                    const id = String(item[idField]);
+                    if (!existingIds.has(id)) {
+                        await addDoc(collectionRef, { ...item, _syncedAt: new Date().toISOString() });
+                    } else {
+                        // update if needed (skip for simplicity, but we could do a deep compare)
+                    }
                 }
-            });
-            document.getElementById('logo-trigger').addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                toggleAdminLogin();
-            });
-            document.getElementById('logo-trigger').addEventListener('mouseenter', () => {
-                document.body.classList.add('show-admin-trigger');
-            });
-            document.getElementById('logo-trigger').addEventListener('mouseleave', () => {
-                document.body.classList.remove('show-admin-trigger');
-            });
-        });
+            } catch (e) {
+                console.warn("Firebase sync warning:", e);
+            }
+        }
 
-        // ---------------- Page Router ----------------
-        function goToPage(id, scrollTop = true) {
+        async function loadFromFirebase(collectionRef, localKey, idField = 'id') {
+            try {
+                const q = query(collectionRef);
+                const snap = await getDocs(q);
+                const items = [];
+                snap.forEach(docSnap => {
+                    items.push({ ...docSnap.data(), _firebaseId: docSnap.id });
+                });
+                if (items.length > 0) {
+                    DB[localKey] = items;
+                    saveDB();
+                }
+                return items;
+            } catch (e) {
+                console.warn("Firebase load warning:", e);
+                return DB[localKey] || [];
+            }
+        }
+
+        async function addToFirebase(collectionRef, data) {
+            try {
+                const docRef = await addDoc(collectionRef, { ...data, _syncedAt: new Date().toISOString() });
+                return docRef.id;
+            } catch (e) {
+                console.warn("Firebase add warning:", e);
+                return null;
+            }
+        }
+
+        async function updateFirebaseDoc(collectionRef, firebaseId, data) {
+            try {
+                const docRef = doc(db, collectionRef.path, firebaseId);
+                await updateDoc(docRef, { ...data, _updatedAt: new Date().toISOString() });
+                return true;
+            } catch (e) {
+                console.warn("Firebase update warning:", e);
+                return false;
+            }
+        }
+
+        async function deleteFirebaseDoc(collectionRef, firebaseId) {
+            try {
+                const docRef = doc(db, collectionRef.path, firebaseId);
+                await deleteDoc(docRef);
+                return true;
+            } catch (e) {
+                console.warn("Firebase delete warning:", e);
+                return false;
+            }
+        }
+
+        // Find firebaseId in DB items (stored as _firebaseId)
+        function getFirebaseId(localKey, id) {
+            const item = DB[localKey]?.find(x => x.id === id);
+            return item?._firebaseId || null;
+        }
+
+        // ================================================================
+        //  INIT: Load all data from Firebase into localStorage
+        // ================================================================
+        async function initFirebaseData() {
+            try {
+                const [products, leads, orders, testimonials, faqs, gallery] = await Promise.all([
+                    loadFromFirebase(productsCol, 'products'),
+                    loadFromFirebase(leadsCol, 'leads'),
+                    loadFromFirebase(ordersCol, 'orders'),
+                    loadFromFirebase(testimonialsCol, 'testimonials'),
+                    loadFromFirebase(faqsCol, 'faqs'),
+                    loadFromFirebase(galleryCol, 'gallery'),
+                ]);
+
+                // If any collection is empty in Firebase, seed it from local
+                if (products.length === 0 && DB.products.length > 0) {
+                    await syncCollectionToFirebase(productsCol, DB.products);
+                }
+                if (leads.length === 0 && DB.leads.length > 0) {
+                    await syncCollectionToFirebase(leadsCol, DB.leads);
+                }
+                if (orders.length === 0 && DB.orders.length > 0) {
+                    await syncCollectionToFirebase(ordersCol, DB.orders);
+                }
+                if (testimonials.length === 0 && DB.testimonials.length > 0) {
+                    await syncCollectionToFirebase(testimonialsCol, DB.testimonials);
+                }
+                if (faqs.length === 0 && DB.faqs.length > 0) {
+                    await syncCollectionToFirebase(faqsCol, DB.faqs);
+                }
+                if (gallery.length === 0 && DB.gallery.length > 0) {
+                    await syncCollectionToFirebase(galleryCol, DB.gallery);
+                }
+
+                // Re-load after seeding
+                await Promise.all([
+                    loadFromFirebase(productsCol, 'products'),
+                    loadFromFirebase(leadsCol, 'leads'),
+                    loadFromFirebase(ordersCol, 'orders'),
+                    loadFromFirebase(testimonialsCol, 'testimonials'),
+                    loadFromFirebase(faqsCol, 'faqs'),
+                    loadFromFirebase(galleryCol, 'gallery'),
+                ]);
+
+            } catch (e) {
+                console.warn("Firebase init warning:", e);
+            }
+        }
+
+        // ================================================================
+        //  EXPOSE functions to global window for inline onclick
+        // ================================================================
+        // Page router
+        window.goToPage = function(id, scrollTop = true) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             const target = document.getElementById('page-' + id);
             if (target) target.classList.remove('hidden');
@@ -2033,121 +2170,70 @@
             document.querySelectorAll(`[data-page="${id}"]`).forEach(l => l.classList.add('nav-active'));
 
             if (scrollTop) window.scrollTo(0, 0);
-            closeMobileMenu();
+            window.closeMobileMenu?.();
             location.hash = id === 'home' ? '' : id;
 
             setTimeout(() => { if (window.AOS) AOS.refresh(); }, 60);
-        }
+        };
 
-        function goToContact() {
-            goToPage('home', false);
+        window.goToContact = function() {
+            window.goToPage('home', false);
             setTimeout(() => {
                 const el = document.getElementById('contact');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
             }, 80);
-        }
+        };
 
-        function closeMobileMenu() {
+        window.closeMobileMenu = function() {
             document.getElementById('mobile-menu').classList.add('hidden');
             document.getElementById('mobile-menu-overlay').classList.remove('active');
             document.getElementById('mobile-menu-btn').setAttribute('aria-expanded', 'false');
             document.body.style.overflow = '';
-        }
+        };
 
-        function toggleMobileMenu() {
+        window.toggleMobileMenu = function() {
             const menu = document.getElementById('mobile-menu');
             const overlay = document.getElementById('mobile-menu-overlay');
             const btn = document.getElementById('mobile-menu-btn');
             const isOpen = !menu.classList.contains('hidden');
             if (isOpen) {
-                closeMobileMenu();
+                window.closeMobileMenu();
             } else {
                 menu.classList.remove('hidden');
                 overlay.classList.add('active');
                 btn.setAttribute('aria-expanded', 'true');
                 document.body.style.overflow = 'hidden';
             }
-        }
-
-        // ---------------- UI Helpers ----------------
-        window.onscroll = () => {
-            updateScrollProgress();
-            const navbar = document.getElementById('navbar');
-            const btt = document.getElementById('back-to-top');
-
-            if (window.scrollY > 50) {
-                navbar.classList.add('py-2', 'shadow-xl');
-                navbar.classList.remove('py-4');
-            } else {
-                navbar.classList.remove('py-2', 'shadow-xl');
-                navbar.classList.add('py-4');
-            }
-
-            if (window.scrollY > 400) {
-                btt.classList.replace('opacity-0', 'opacity-100');
-                btt.classList.replace('translate-y-10', 'translate-y-0');
-            } else {
-                btt.classList.replace('opacity-100', 'opacity-0');
-                btt.classList.replace('translate-y-0', 'translate-y-10');
-            }
         };
 
-        function updateScrollProgress() {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-            document.getElementById("scroll-progress").style.width = scrolled + "%";
-        }
+        // Theme toggle
+        document.getElementById('theme-toggle')?.addEventListener('click', () => document.documentElement.classList.toggle('dark'));
+        document.getElementById('theme-toggle-mobile')?.addEventListener('click', () => document.documentElement.classList.toggle('dark'));
 
-        // Theme Toggle
-        [document.getElementById('theme-toggle'), document.getElementById('theme-toggle-mobile')].forEach(btn => {
-            btn.addEventListener('click', () => document.documentElement.classList.toggle('dark'));
-        });
+        // Mobile menu button
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', window.toggleMobileMenu);
 
-        // Counters
-        function initCounters() {
-            const counters = document.querySelectorAll('.counter');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !entry.target.dataset.done) {
-                        entry.target.dataset.done = '1';
-                        const target = +entry.target.getAttribute('data-target');
-                        let count = 0;
-                        const update = () => {
-                            const speed = target / 50;
-                            if (count < target) {
-                                count += speed;
-                                entry.target.innerText = Math.ceil(count);
-                                setTimeout(update, 20);
-                            } else {
-                                entry.target.innerText = target;
-                            }
-                        };
-                        update();
-                    }
-                });
-            }, { threshold: 0.6 });
-            counters.forEach(c => observer.observe(c));
-        }
+        // Back to top
+        document.getElementById('back-to-top')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        // ---------------- Hero Slider ----------------
+        // ================================================================
+        //  HERO SLIDER
+        // ================================================================
         const heroLabels = ["Sustainable Seafood", "Pure Dairy Farming", "Modern Agriculture", "Industrial Hardware"];
         const SLIDE_DURATION = 6000;
         let currentSlide = 0;
         let slideTimer;
 
-        function initHeroSlider() {
-            setHeroSlide(0, true);
-        }
-
-        function setHeroSlide(i, isInit) {
+        window.setHeroSlide = function(i, isInit) {
             currentSlide = i;
             document.querySelectorAll('.hero-slide').forEach((el, idx) => {
                 el.classList.toggle('opacity-100', idx === i);
                 el.classList.toggle('opacity-0', idx !== i);
             });
-            document.getElementById('hero-slide-num').innerText = String(i + 1).padStart(2, '0');
-            document.getElementById('hero-slide-label').innerText = heroLabels[i];
+            const numEl = document.getElementById('hero-slide-num');
+            const labelEl = document.getElementById('hero-slide-label');
+            if (numEl) numEl.innerText = String(i + 1).padStart(2, '0');
+            if (labelEl) labelEl.innerText = heroLabels[i];
 
             document.querySelectorAll('.hero-dot').forEach((dot, idx) => {
                 dot.classList.toggle('active', idx === i);
@@ -2166,12 +2252,15 @@
             });
 
             clearTimeout(slideTimer);
-            slideTimer = setTimeout(() => setHeroSlide((currentSlide + 1) % 4), SLIDE_DURATION);
-        }
+            slideTimer = setTimeout(() => window.setHeroSlide((currentSlide + 1) % 4), SLIDE_DURATION);
+        };
 
-        // ---------------- Product Grid (Home) ----------------
-        function renderProductGrid(filter = 'all') {
+        // ================================================================
+        //  PRODUCT GRID (Home)
+        // ================================================================
+        window.renderProductGrid = function(filter = 'all') {
             const grid = document.getElementById('product-grid');
+            if (!grid) return;
             grid.innerHTML = '';
             const filtered = filter === 'all' ? DB.products : DB.products.filter(p => p.category === filter);
 
@@ -2187,7 +2276,7 @@
                         <div class="p-6">
                             <h4 class="text-xl font-bold mb-2">${p.name}</h4>
                             <p class="text-secondary font-black mb-4">${p.price}</p>
-                            <button onclick="openOrderModal('${p.name.replace(/'/g, "\\'")}')" class="w-full bg-secondary text-white py-3 rounded-xl font-bold hover:bg-teal-700 transition-all shadow-lg shadow-teal-500/30">
+                            <button onclick="window.openOrderModal('${p.name.replace(/'/g, "\\'")}')" class="w-full bg-secondary text-white py-3 rounded-xl font-bold hover:bg-teal-700 transition-all shadow-lg shadow-teal-500/30">
                                 <i class="fas fa-shopping-cart mr-2"></i> Order Now
                             </button>
                         </div>
@@ -2195,22 +2284,25 @@
                 `;
                 grid.innerHTML += card;
             });
-        }
+        };
 
-        function filterGallery(cat) {
+        window.filterGallery = function(cat) {
             document.querySelectorAll('#gallery-filters .product-tab').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.innerText.toLowerCase() === cat) btn.classList.add('active');
                 if (cat === 'all' && btn.innerText === 'All') btn.classList.add('active');
             });
-            renderProductGrid(cat);
-        }
+            window.renderProductGrid(cat);
+        };
 
-        // ---------------- Products Full Page ----------------
+        // ================================================================
+        //  PRODUCTS FULL PAGE
+        // ================================================================
         let productsPageFilter = 'all';
 
-        function renderProductsFullPage() {
+        window.renderProductsFullPage = function() {
             const grid = document.getElementById('products-full-grid');
+            if (!grid) return;
             grid.innerHTML = '';
             const items = productsPageFilter === 'all' ? DB.products : DB.products.filter(p => p.category === productsPageFilter);
 
@@ -2226,7 +2318,7 @@
                         <div class="p-6">
                             <h4 class="text-xl font-bold mb-2">${p.name}</h4>
                             <p class="text-secondary font-black mb-4">${p.price}</p>
-                            <button onclick="openOrderModal('${p.name.replace(/'/g, "\\'")}')" class="w-full bg-secondary text-white py-3 rounded-xl font-bold hover:bg-teal-700 transition-all shadow-lg shadow-teal-500/30">
+                            <button onclick="window.openOrderModal('${p.name.replace(/'/g, "\\'")}')" class="w-full bg-secondary text-white py-3 rounded-xl font-bold hover:bg-teal-700 transition-all shadow-lg shadow-teal-500/30">
                                 <i class="fas fa-shopping-cart mr-2"></i> Order Now
                             </button>
                         </div>
@@ -2234,33 +2326,37 @@
                 `;
                 grid.innerHTML += card;
             });
-        }
+        };
 
-        function filterProductsPage(cat) {
+        window.filterProductsPage = function(cat) {
             productsPageFilter = cat;
             document.querySelectorAll('#products-page-filters .product-tab').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.innerText.toLowerCase() === cat) btn.classList.add('active');
                 if (cat === 'all' && btn.innerText === 'All') btn.classList.add('active');
             });
-            renderProductsFullPage();
-        }
+            window.renderProductsFullPage();
+        };
 
-        // ---------------- Order Modal ----------------
-        function openOrderModal(productName) {
+        // ================================================================
+        //  ORDER MODAL
+        // ================================================================
+        window.openOrderModal = function(productName) {
             document.getElementById('order-product').value = productName;
-            document.getElementById('order-modal').classList.remove('hidden');
-            document.getElementById('order-modal').classList.add('flex');
+            const modal = document.getElementById('order-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
             document.body.style.overflow = 'hidden';
-        }
+        };
 
-        function closeOrderModal() {
-            document.getElementById('order-modal').classList.add('hidden');
-            document.getElementById('order-modal').classList.remove('flex');
+        window.closeOrderModal = function() {
+            const modal = document.getElementById('order-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
             document.body.style.overflow = '';
-        }
+        };
 
-        document.getElementById('orderForm').onsubmit = async (e) => {
+        document.getElementById('orderForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const order = {
@@ -2272,35 +2368,53 @@
                 address: document.getElementById('order-address').value || 'Not provided',
                 qty: parseInt(document.getElementById('order-qty').value) || 1,
                 notes: document.getElementById('order-notes').value || '',
-                date: new Date().toISOString().split('T')[0]
+                date: new Date().toISOString().split('T')[0],
+                _firebaseId: null
             };
 
             DB.orders.push(order);
             saveDB();
 
-            DB.leads.push({
+            // Sync to Firebase
+            const fbId = await addToFirebase(ordersCol, order);
+            if (fbId) {
+                const idx = DB.orders.findIndex(o => o.id === order.id);
+                if (idx !== -1) DB.orders[idx]._firebaseId = fbId;
+                saveDB();
+            }
+
+            // Also add as a lead
+            const lead = {
                 id: Date.now() + 1,
                 name: order.customer,
                 email: order.email,
                 division: 'Order: ' + order.product,
                 message: `Order placed for ${order.product} (Qty: ${order.qty}). Address: ${order.address}. Notes: ${order.notes}`,
-                date: order.date
-            });
+                date: order.date,
+                _firebaseId: null
+            };
+            DB.leads.push(lead);
             saveDB();
-
-            try {
-                await _supabase.from('orders').insert([order]);
-            } catch (err) { console.error("Supabase sync failed", err); }
+            const fbLeadId = await addToFirebase(leadsCol, lead);
+            if (fbLeadId) {
+                const idx = DB.leads.findIndex(l => l.id === lead.id);
+                if (idx !== -1) DB.leads[idx]._firebaseId = fbLeadId;
+                saveDB();
+            }
 
             alert('✅ Order placed successfully! We will confirm within 24 hours.');
-            closeOrderModal();
+            window.closeOrderModal();
             document.getElementById('orderForm').reset();
-            if (window.refreshAdmin) refreshAdmin();
-        };
+            if (window.refreshAdmin) window.refreshAdmin();
+        });
 
-        // ---------------- Testimonials ----------------
-        function renderTestimonials() {
+        // ================================================================
+        //  TESTIMONIALS
+        // ================================================================
+        window.renderTestimonials = function() {
             const slider = document.getElementById('testimonial-slider');
+            if (!slider) return;
+            slider.innerHTML = '';
             DB.testimonials.forEach(t => {
                 const card = `
                     <div class="min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800">
@@ -2319,14 +2433,18 @@
                 `;
                 slider.innerHTML += card;
             });
-        }
+        };
 
-        // ---------------- FAQ ----------------
-        function renderFAQ() {
+        // ================================================================
+        //  FAQ
+        // ================================================================
+        window.renderFAQ = function() {
             const container = document.getElementById('faq-container');
+            if (!container) return;
+            container.innerHTML = '';
             DB.faqs.forEach((f) => {
                 const item = `
-                    <div class="faq-accordion bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700" onclick="toggleFAQ(this)">
+                    <div class="faq-accordion bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700" onclick="window.toggleFAQ(this)">
                         <button class="w-full px-8 py-6 flex items-center justify-between text-left">
                             <span class="font-bold text-lg">${f.q}</span>
                             <i class="fas fa-chevron-down icon transition-transform"></i>
@@ -2338,22 +2456,25 @@
                 `;
                 container.innerHTML += item;
             });
-        }
+        };
 
-        function toggleFAQ(el) { el.classList.toggle('active'); }
+        window.toggleFAQ = function(el) { el.classList.toggle('active'); };
 
-        // ---------------- Gallery Page + Lightbox ----------------
+        // ================================================================
+        //  GALLERY PAGE + LIGHTBOX
+        // ================================================================
         let galleryFilterState = 'all';
 
-        function renderGalleryPage() {
+        window.renderGalleryPage = function() {
             const grid = document.getElementById('masonry-grid');
+            if (!grid) return;
             grid.innerHTML = '';
             const items = galleryFilterState === 'all' ? DB.gallery : DB.gallery.filter(g => g.category === galleryFilterState);
 
             items.forEach((g) => {
                 const realIndex = DB.gallery.findIndex(x => x.id === g.id);
                 const item = `
-                    <div class="masonry-item group relative rounded-[1.5rem] overflow-hidden shadow-lg cursor-pointer" data-aos="fade-up" onclick="openLightbox(${realIndex})">
+                    <div class="masonry-item group relative rounded-[1.5rem] overflow-hidden shadow-lg cursor-pointer" data-aos="fade-up" onclick="window.openLightbox(${realIndex})">
                         <img src="${g.image}" alt="${g.caption}" class="w-full group-hover:scale-110 transition-transform duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
                             <div>
@@ -2365,59 +2486,65 @@
                 `;
                 grid.innerHTML += item;
             });
-        }
+        };
 
-        function filterGalleryPage(cat) {
+        window.filterGalleryPage = function(cat) {
             galleryFilterState = cat;
             document.querySelectorAll('#gallery-page-filters .product-tab').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.innerText.toLowerCase() === cat) btn.classList.add('active');
                 if (cat === 'all' && btn.innerText === 'All') btn.classList.add('active');
             });
-            renderGalleryPage();
-        }
+            window.renderGalleryPage();
+        };
 
         let lightboxIndex = 0;
 
-        function openLightbox(i) {
+        window.openLightbox = function(i) {
             lightboxIndex = i;
-            renderLightbox();
+            window.renderLightbox();
             const lb = document.getElementById('lightbox');
             lb.classList.remove('hidden');
             lb.classList.add('flex');
-        }
+        };
 
-        function closeLightbox() {
+        window.closeLightbox = function() {
             const lb = document.getElementById('lightbox');
             lb.classList.add('hidden');
             lb.classList.remove('flex');
-        }
+        };
 
-        function lightboxNav(dir) {
+        window.lightboxNav = function(dir) {
             lightboxIndex = (lightboxIndex + dir + DB.gallery.length) % DB.gallery.length;
-            renderLightbox();
-        }
+            window.renderLightbox();
+        };
 
-        function renderLightbox() {
+        window.renderLightbox = function() {
             const g = DB.gallery[lightboxIndex];
-            document.getElementById('lightbox-img').src = g.image.replace('w=800', 'w=1400');
-            document.getElementById('lightbox-img').alt = g.caption;
-            document.getElementById('lightbox-caption').innerText = g.caption;
-            document.getElementById('lightbox-category').innerText = g.category;
-        }
+            const img = document.getElementById('lightbox-img');
+            if (img) img.src = g.image.replace('w=800', 'w=1400');
+            const cap = document.getElementById('lightbox-caption');
+            if (cap) cap.innerText = g.caption;
+            const cat = document.getElementById('lightbox-category');
+            if (cat) cat.innerText = g.category;
+        };
 
         document.addEventListener('keydown', (e) => {
             if (document.getElementById('lightbox').classList.contains('hidden')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowRight') lightboxNav(1);
-            if (e.key === 'ArrowLeft') lightboxNav(-1);
+            if (e.key === 'Escape') window.closeLightbox();
+            if (e.key === 'ArrowRight') window.lightboxNav(1);
+            if (e.key === 'ArrowLeft') window.lightboxNav(-1);
         });
 
-        // ---------------- Chatbot ----------------
-        function toggleChat() { document.getElementById('chat-window').classList.toggle('hidden'); }
-        document.getElementById('chatbot-toggle').onclick = toggleChat;
+        // ================================================================
+        //  CHATBOT
+        // ================================================================
+        window.toggleChat = function() {
+            document.getElementById('chat-window').classList.toggle('hidden');
+        };
+        document.getElementById('chatbot-toggle')?.addEventListener('click', window.toggleChat);
 
-        function handleQuickReply(type) {
+        window.handleQuickReply = function(type) {
             let msg = "";
             switch (type) {
                 case 'Office Locations':
@@ -2430,22 +2557,10 @@
                     msg = "How can I contact the CEO?";
                     break;
             }
-            processChat(msg);
-        }
+            window.processChat(msg);
+        };
 
-        function setupChatbot() {
-            const input = document.getElementById('chat-input');
-            const sendBtn = document.getElementById('send-chat');
-            const sendMessage = () => {
-                const text = input.value.trim();
-                if (text) { processChat(text);
-                    input.value = ''; }
-            };
-            sendBtn.onclick = sendMessage;
-            input.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
-        }
-
-        function processChat(msg) {
+        window.processChat = function(msg) {
             const chatMessages = document.getElementById('chat-messages');
             chatMessages.innerHTML += `
                 <div class="flex gap-3 justify-end">
@@ -2483,10 +2598,32 @@
                 `;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 600);
+        };
+
+        // Chat input handlers
+        const chatInput = document.getElementById('chat-input');
+        const sendChat = document.getElementById('send-chat');
+        if (sendChat) {
+            sendChat.addEventListener('click', () => {
+                const text = chatInput.value.trim();
+                if (text) { window.processChat(text);
+                    chatInput.value = ''; }
+            });
+        }
+        if (chatInput) {
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const text = chatInput.value.trim();
+                    if (text) { window.processChat(text);
+                        chatInput.value = ''; }
+                }
+            });
         }
 
-        // ---------------- Contact Form ----------------
-        document.getElementById('contactForm').onsubmit = async (e) => {
+        // ================================================================
+        //  CONTACT FORM
+        // ================================================================
+        document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const lead = {
                 id: Date.now(),
@@ -2494,65 +2631,122 @@
                 email: document.getElementById('email').value,
                 division: document.getElementById('division').value,
                 message: document.getElementById('message').value,
-                date: new Date().toISOString().split('T')[0]
+                date: new Date().toISOString().split('T')[0],
+                _firebaseId: null
             };
 
             DB.leads.push(lead);
             saveDB();
-            console.log("✅ Lead saved to DB:", lead);
 
-            try {
-                const { error } = await _supabase.from('leads').insert([lead]);
-                if (error) throw error;
-                console.log("✅ Lead synced to Supabase");
-            } catch (err) { console.error("Supabase sync failed, stored locally.", err); }
+            const fbId = await addToFirebase(leadsCol, lead);
+            if (fbId) {
+                const idx = DB.leads.findIndex(l => l.id === lead.id);
+                if (idx !== -1) DB.leads[idx]._firebaseId = fbId;
+                saveDB();
+            }
 
             alert('Thank you! Your message has been received. Our team will contact you soon.');
             e.target.reset();
+            if (window.refreshAdmin) window.refreshAdmin();
+        });
 
-            // Refresh admin if open
-            if (document.body.classList.contains('admin-mode')) {
-                refreshAdmin();
+        // ================================================================
+        //  COUNTERS
+        // ================================================================
+        window.initCounters = function() {
+            const counters = document.querySelectorAll('.counter');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.dataset.done) {
+                        entry.target.dataset.done = '1';
+                        const target = +entry.target.getAttribute('data-target');
+                        let count = 0;
+                        const update = () => {
+                            const speed = target / 50;
+                            if (count < target) {
+                                count += speed;
+                                entry.target.innerText = Math.ceil(count);
+                                setTimeout(update, 20);
+                            } else {
+                                entry.target.innerText = target;
+                            }
+                        };
+                        update();
+                    }
+                });
+            }, { threshold: 0.6 });
+            counters.forEach(c => observer.observe(c));
+        };
+
+        // ================================================================
+        //  SCROLL PROGRESS
+        // ================================================================
+        window.updateScrollProgress = function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            const el = document.getElementById("scroll-progress");
+            if (el) el.style.width = scrolled + "%";
+        };
+
+        window.addEventListener('scroll', () => {
+            window.updateScrollProgress();
+            const navbar = document.getElementById('navbar');
+            const btt = document.getElementById('back-to-top');
+
+            if (window.scrollY > 50) {
+                navbar?.classList.add('py-2', 'shadow-xl');
+                navbar?.classList.remove('py-4');
+            } else {
+                navbar?.classList.remove('py-2', 'shadow-xl');
+                navbar?.classList.add('py-4');
+            }
+
+            if (window.scrollY > 400) {
+                btt?.classList.replace('opacity-0', 'opacity-100');
+                btt?.classList.replace('translate-y-10', 'translate-y-0');
+            } else {
+                btt?.classList.replace('opacity-100', 'opacity-0');
+                btt?.classList.replace('translate-y-0', 'translate-y-10');
+            }
+        });
+
+        // ================================================================
+        //  ADMIN PANEL
+        // ================================================================
+        window.toggleAdminLogin = function() {
+            document.getElementById('admin-login-modal').classList.toggle('hidden');
+        };
+
+        window.setAdminMode = function(active) {
+            document.body.classList.toggle('admin-mode', active);
+            const mainView = document.getElementById('main-view');
+            const adminView = document.getElementById('admin-view');
+            if (mainView) mainView.style.display = active ? 'none' : 'block';
+            if (adminView) adminView.style.display = active ? 'flex' : 'none';
+            if (active) {
+                window.closeMobileMenu();
+                document.getElementById('admin-login-modal').classList.add('hidden');
             }
         };
 
-        function handleInquiry(product) {
-            goToContact();
-            setTimeout(() => {
-                document.getElementById('message').value = `I am interested in ordering: ${product}`;
-            }, 150);
-        }
-
-        // ---------------- Admin (FIXED) ----------------
-        function toggleAdminLogin() { document.getElementById('admin-login-modal').classList.toggle('hidden'); }
-
-        function setAdminMode(active) {
-            document.body.classList.toggle('admin-mode', active);
-            document.getElementById('main-view').style.display = active ? 'none' : 'block';
-            document.getElementById('admin-view').style.display = active ? 'flex' : 'none';
-            if (active) {
-                closeMobileMenu();
-                document.getElementById('admin-login-modal').classList.add('hidden');
+        window.login = async function() {
+            const user = document.getElementById('admin-user').value;
+            const pass = document.getElementById('admin-pass').value;
+            if (user === 'admin' && pass === 'admin123') {
+                window.setAdminMode(true);
+                window.showAdminSection('products');
+                await window.refreshAdmin();
+            } else {
+                alert('Invalid credentials!');
             }
-        }
+        };
 
-    async function login() {  // Added async
-    const user = document.getElementById('admin-user').value;
-    const pass = document.getElementById('admin-pass').value;
-    if (user === 'admin' && pass === 'admin123') {
-        setAdminMode(true);
-        showAdminSection('products');
-        await refreshAdmin(); // Added await
-    } else {
-        alert('Invalid credentials!');
-    }
-}
+        window.logout = function() {
+            window.setAdminMode(false);
+        };
 
-        function logout() {
-            setAdminMode(false);
-        }
-
-        function showAdminSection(sec) {
+        window.showAdminSection = function(sec) {
             ['products', 'leads', 'orders', 'settings'].forEach(s => {
                 const el = document.getElementById(`admin-${s}-section`);
                 if (el) el.classList.add('hidden');
@@ -2561,7 +2755,8 @@
             if (target) target.classList.remove('hidden');
 
             const titles = { products: 'Products', leads: 'Inquiries', orders: 'Orders', settings: 'Settings' };
-            document.getElementById('admin-page-title').innerText = titles[sec] || 'Products';
+            const titleEl = document.getElementById('admin-page-title');
+            if (titleEl) titleEl.innerText = titles[sec] || 'Products';
 
             document.querySelectorAll('.admin-sidebar-link').forEach(l => l.classList.remove('active'));
             const btns = document.querySelectorAll('.admin-sidebar-link');
@@ -2574,115 +2769,104 @@
             if (!document.querySelector('.admin-sidebar-link.active')) {
                 document.querySelector('.admin-sidebar-link:first-child')?.classList.add('active');
             }
-        }
+        };
 
-        // Add "async" here so the function can talk to the internet
-async function refreshAdmin() {
-    
-    // --- NEW: FETCH DATA FROM SUPABASE ---
-    try {
-        // This gets your Leads from Supabase
-        const { data: remoteLeads } = await _supabase.from('leads').select('*').order('id', { ascending: false });
-        // This gets your Orders from Supabase
-        const { data: remoteOrders } = await _supabase.from('orders').select('*').order('id', { ascending: false });
+        window.refreshAdmin = async function() {
+            // Reload from Firebase
+            await Promise.all([
+                loadFromFirebase(productsCol, 'products'),
+                loadFromFirebase(leadsCol, 'leads'),
+                loadFromFirebase(ordersCol, 'orders'),
+            ]);
 
-        // Update your local data with what we found on Supabase
-        if (remoteLeads) DB.leads = remoteLeads;
-        if (remoteOrders) DB.orders = remoteOrders;
-    } catch (err) {
-        console.error("Supabase Error:", err);
-    }
-    // -------------------------------------
+            // Update badges
+            const inquiryCount = document.getElementById('inquiry-count');
+            const orderCount = document.getElementById('order-count');
+            const leadsBadge = document.getElementById('leads-total-badge');
+            const ordersBadge = document.getElementById('orders-total-badge');
 
-    // Update badges
-    document.getElementById('inquiry-count').innerText = DB.leads.length;
-    document.getElementById('order-count').innerText = DB.orders.length;
-    const leadsBadge = document.getElementById('leads-total-badge');
-    if (leadsBadge) leadsBadge.innerText = DB.leads.length;
-    const ordersBadge = document.getElementById('orders-total-badge');
-    if (ordersBadge) ordersBadge.innerText = DB.orders.length;
+            if (inquiryCount) inquiryCount.innerText = DB.leads.length;
+            if (orderCount) orderCount.innerText = DB.orders.length;
+            if (leadsBadge) leadsBadge.innerText = DB.leads.length;
+            if (ordersBadge) ordersBadge.innerText = DB.orders.length;
 
-    // Admin Product List
-    const productTable = document.getElementById('admin-product-list');
-    if (productTable) {
-        productTable.innerHTML = '';
-        if (DB.products.length === 0) {
-            productTable.innerHTML = `<tr><td colspan="5" class="p-10 text-center">No products found.</td></tr>`;
-        } else {
-            DB.products.forEach(p => {
-                productTable.innerHTML += `
-                    <tr class="admin-table-row border-b dark:border-slate-700/50">
-                        <td class="p-4"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover"></td>
-                        <td class="p-4 font-bold">${p.name}</td>
-                        <td class="p-4 text-sm opacity-60 uppercase font-bold">${p.category}</td>
-                        <td class="p-4 font-bold text-secondary">${p.price}</td>
-                        <td class="p-4 text-right space-x-2">
-                            <button class="admin-action-btn edit" onclick="editProduct(${p.id})"><i class="fas fa-pen"></i></button>
-                            <button class="admin-action-btn delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>`;
-            });
-        }
-    }
+            // Admin Product List
+            const productTable = document.getElementById('admin-product-list');
+            if (productTable) {
+                productTable.innerHTML = '';
+                if (DB.products.length === 0) {
+                    productTable.innerHTML = `<tr><td colspan="5" class="p-10 text-center">No products found.</td></tr>`;
+                } else {
+                    DB.products.forEach(p => {
+                        productTable.innerHTML += `
+                            <tr class="admin-table-row border-b dark:border-slate-700/50">
+                                <td class="p-4"><img src="${p.image}" class="w-12 h-12 rounded-xl object-cover"></td>
+                                <td class="p-4 font-bold">${p.name}</td>
+                                <td class="p-4 text-sm opacity-60 uppercase font-bold">${p.category}</td>
+                                <td class="p-4 font-bold text-secondary">${p.price}</td>
+                                <td class="p-4 text-right space-x-2">
+                                    <button class="admin-action-btn edit" onclick="window.editProduct(${p.id})"><i class="fas fa-pen"></i></button>
+                                    <button class="admin-action-btn delete" onclick="window.deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>`;
+                    });
+                }
+            }
 
-    // Leads List
-    const leadsList = document.getElementById('leads-list-container');
-    if (leadsList) {
-        leadsList.innerHTML = '';
-        if (DB.leads.length === 0) {
-            leadsList.innerHTML = `<div class="empty-state text-center py-16">No inquiries yet</div>`;
-        } else {
-            DB.leads.forEach((l, idx) => {
-                leadsList.innerHTML += `
-                    <div class="admin-lead-item bg-white dark:bg-slate-800 p-6 rounded-2xl border mb-4">
-                        <div class="flex justify-between">
-                            <h5 class="font-black text-lg">${l.name} <span class="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded">${l.division}</span></h5>
-                            <span class="text-xs opacity-40">${l.date}</span>
-                        </div>
-                        <p class="text-sm text-secondary">${l.email}</p>
-                        <p class="text-slate-600 dark:text-slate-400 mt-2">"${l.message}"</p>
-                    </div>`;
-            });
-        }
-    }
+            // Leads List
+            const leadsList = document.getElementById('leads-list-container');
+            if (leadsList) {
+                leadsList.innerHTML = '';
+                if (DB.leads.length === 0) {
+                    leadsList.innerHTML = `<div class="empty-state text-center py-16">No inquiries yet</div>`;
+                } else {
+                    DB.leads.forEach((l) => {
+                        leadsList.innerHTML += `
+                            <div class="admin-lead-item bg-white dark:bg-slate-800 p-6 rounded-2xl border mb-4">
+                                <div class="flex justify-between">
+                                    <h5 class="font-black text-lg">${l.name} <span class="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded">${l.division}</span></h5>
+                                    <span class="text-xs opacity-40">${l.date}</span>
+                                </div>
+                                <p class="text-sm text-secondary">${l.email}</p>
+                                <p class="text-slate-600 dark:text-slate-400 mt-2">"${l.message}"</p>
+                            </div>`;
+                    });
+                }
+            }
 
-    // Orders List
-    const ordersList = document.getElementById('orders-list-container');
-    if (ordersList) {
-        ordersList.innerHTML = '';
-        if (DB.orders.length === 0) {
-            ordersList.innerHTML = `<div class="empty-state text-center py-16">No orders yet</div>`;
-        } else {
-            DB.orders.forEach((o, idx) => {
-                ordersList.innerHTML += `
-                    <div class="admin-lead-item bg-white dark:bg-slate-800 p-6 rounded-2xl border mb-4">
-                        <h5 class="font-black text-lg">${o.product} <span class="text-xs bg-accent/10 text-accent px-2 py-1 rounded">Qty: ${o.qty}</span></h5>
-                        <p class="text-sm text-secondary">${o.customer} • ${o.phone}</p>
-                        <p class="text-sm mt-2">${o.address}</p>
-                        ${o.notes ? `<p class="text-xs text-slate-500 italic mt-1">Note: ${o.notes}</p>` : ''}
-                    </div>`;
-            });
-        }
-    }
-}
+            // Orders List
+            const ordersList = document.getElementById('orders-list-container');
+            if (ordersList) {
+                ordersList.innerHTML = '';
+                if (DB.orders.length === 0) {
+                    ordersList.innerHTML = `<div class="empty-state text-center py-16">No orders yet</div>`;
+                } else {
+                    DB.orders.forEach((o) => {
+                        ordersList.innerHTML += `
+                            <div class="admin-lead-item bg-white dark:bg-slate-800 p-6 rounded-2xl border mb-4">
+                                <h5 class="font-black text-lg">${o.product} <span class="text-xs bg-accent/10 text-accent px-2 py-1 rounded">Qty: ${o.qty}</span></h5>
+                                <p class="text-sm text-secondary">${o.customer} • ${o.phone}</p>
+                                <p class="text-sm mt-2">${o.address}</p>
+                                ${o.notes ? `<p class="text-xs text-slate-500 italic mt-1">Note: ${o.notes}</p>` : ''}
+                            </div>`;
+                    });
+                }
+            }
+        };
 
-        // Make refreshAdmin globally available for order form
-        window.refreshAdmin = refreshAdmin;
-
-        async function deleteProduct(id) {
+        window.deleteProduct = async function(id) {
             if (confirm('Are you sure you want to delete this product?')) {
+                const fbId = getFirebaseId('products', id);
                 DB.products = DB.products.filter(p => p.id !== id);
                 saveDB();
-                try {
-                    await _supabase.from('products').delete().eq('id', id);
-                } catch (e) {}
-                refreshAdmin();
-                renderProductGrid();
-                renderProductsFullPage();
+                if (fbId) await deleteFirebaseDoc(productsCol, fbId);
+                await window.refreshAdmin();
+                window.renderProductGrid();
+                window.renderProductsFullPage();
             }
-        }
+        };
 
-        async function editProduct(id) {
+        window.editProduct = async function(id) {
             const product = DB.products.find(p => p.id === id);
             if (!product) return;
             const newName = prompt("Edit product name:", product.name);
@@ -2697,15 +2881,14 @@ async function refreshAdmin() {
             if (newImg) product.image = newImg;
 
             saveDB();
-            try {
-                await _supabase.from('products').update(product).eq('id', id);
-            } catch (e) {}
-            refreshAdmin();
-            renderProductGrid();
-            renderProductsFullPage();
-        }
+            const fbId = getFirebaseId('products', id);
+            if (fbId) await updateFirebaseDoc(productsCol, fbId, product);
+            await window.refreshAdmin();
+            window.renderProductGrid();
+            window.renderProductsFullPage();
+        };
 
-        async function openProductModal() {
+        window.openProductModal = async function() {
             const name = prompt("Enter Product Name:");
             if (!name) return;
             const cat = prompt("Enter Category (seafood/dairy/hardware/agri):");
@@ -2713,35 +2896,90 @@ async function refreshAdmin() {
             const img = prompt("Enter Image URL (or leave blank for placeholder):",
                 "https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=400");
 
-            const newProduct = { id: Date.now(), name: name, category: cat || 'general', price: price ||
-                    'Contact for Price', image: img || 'https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=400' };
+            const newProduct = {
+                id: Date.now(),
+                name: name,
+                category: cat || 'general',
+                price: price || 'Contact for Price',
+                image: img || 'https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=400',
+                _firebaseId: null
+            };
             DB.products.push(newProduct);
             saveDB();
 
-            try {
-                await _supabase.from('products').insert([newProduct]);
-            } catch (e) {}
+            const fbId = await addToFirebase(productsCol, newProduct);
+            if (fbId) {
+                const idx = DB.products.findIndex(p => p.id === newProduct.id);
+                if (idx !== -1) DB.products[idx]._firebaseId = fbId;
+                saveDB();
+            }
 
-            refreshAdmin();
-            renderProductGrid();
-            renderProductsFullPage();
-        }
+            await window.refreshAdmin();
+            window.renderProductGrid();
+            window.renderProductsFullPage();
+        };
 
-        // ---------------- Misc ----------------
-        document.getElementById('back-to-top').onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-        document.getElementById('mobile-menu-btn').onclick = toggleMobileMenu;
-
-        // Close mobile menu on resize to desktop
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) closeMobileMenu();
+        // ================================================================
+        //  HIDDEN ADMIN TRIGGERS
+        // ================================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                e.preventDefault();
+                window.toggleAdminLogin();
+            }
         });
 
-        // On login, ensure admin is refreshed after a short delay
-        const origLogin = login;
-        login = function() {
-            origLogin();
-            setTimeout(refreshAdmin, 100);
-        };
+        const logoTrigger = document.getElementById('logo-trigger');
+        if (logoTrigger) {
+            logoTrigger.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                window.toggleAdminLogin();
+            });
+            logoTrigger.addEventListener('mouseenter', () => {
+                document.body.classList.add('show-admin-trigger');
+            });
+            logoTrigger.addEventListener('mouseleave', () => {
+                document.body.classList.remove('show-admin-trigger');
+            });
+        }
+
+        // ================================================================
+        //  BOOTSTRAP
+        // ================================================================
+        async function bootstrap() {
+            // Load AOS
+            AOS.init({ duration: 1000, once: true });
+
+            // Load data from Firebase
+            await initFirebaseData();
+
+            // Render UI
+            window.renderProductGrid();
+            window.renderProductsFullPage();
+            window.renderTestimonials();
+            window.renderFAQ();
+            window.renderGalleryPage();
+            window.initCounters();
+
+            // Hero slider
+            window.setHeroSlide(0, true);
+
+            // Handle hash routing
+            const initial = (location.hash || '').replace('#', '');
+            if (['about', 'services', 'products', 'gallery'].includes(initial)) {
+                window.goToPage(initial, false);
+            }
+
+            // Refresh admin after short delay (if admin was open)
+            setTimeout(window.refreshAdmin, 200);
+        }
+
+        // Make refreshAdmin available globally
+        window.refreshAdmin = window.refreshAdmin || function() {};
+
+        // Run
+        bootstrap().catch(e => console.warn("Bootstrap error:", e));
     </script>
+
 </body>
 </html>
